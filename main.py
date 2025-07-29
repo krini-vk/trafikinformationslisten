@@ -106,7 +106,6 @@ def format_data(df: pd.DataFrame):
 
 
 def main():
-    today_date = datetime.datetime.today().date()
     last_log_date = get_last_log_date()
 
     # get the data from the API
