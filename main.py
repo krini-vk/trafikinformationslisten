@@ -6,18 +6,6 @@ import pandas as pd
 from dotenv import load_dotenv
 
 
-load_dotenv()  # Load environment variables from .env
-
-today_date = datetime.datetime.today().date()
-
-output_folder = os.getenv("OUTPUT_FOLDER")  # Get from .env
-filename = f"trafik informations listen {today_date}.docx"
-output_path = os.path.join(output_folder, filename)
-
-log_filename = "log.txt"
-log_paths = [os.path.join(output_folder, log_filename), log_filename]
-
-
 def get_last_log_date():
     """
     Get the last date from the log file.
@@ -140,6 +128,19 @@ def main():
 
 if __name__ == "__main__":
     try:
+        # Set up environment
+        load_dotenv()  # Load environment variables from .env
+
+        today_date = datetime.datetime.today().date()
+
+        output_folder = os.getenv("OUTPUT_FOLDER")  # Get from .env
+        filename = f"trafik informations listen {today_date}.docx"
+        output_path = os.path.join(output_folder, filename)
+
+        log_filename = "log.txt"
+        log_paths = [os.path.join(output_folder, log_filename), log_filename]
+
+        # Run the main function
         main()
         update_log("Script executed successfully.")
     except Exception as e:
