@@ -140,5 +140,9 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
-    update_log("Script executed successfully.")
+    try:
+        main()
+        update_log("Script executed successfully.")
+    except Exception as e:
+        update_log(f"Error: {str(e)}")
+        raise e
