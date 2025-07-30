@@ -60,6 +60,15 @@ def format_data(df: pd.DataFrame):
         inplace=True,
     )
 
+    # convert date columns to datetime
+    datetime_format = "%d-%m-%Y"
+    df["startdate"] = pd.to_datetime(df["startdate"], errors="coerce").dt.strftime(
+        datetime_format
+    )
+    df["enddate"] = pd.to_datetime(df["enddate"], errors="coerce").dt.strftime(
+        datetime_format
+    )
+
     # add starttime and endtime to period, if startdate and enddate are the same
     df["duration"] = df.apply(
         lambda row: (
@@ -71,10 +80,6 @@ def format_data(df: pd.DataFrame):
         ),
         axis=1,
     )
-
-    # convert date columns to datetime
-    df["startdate"] = pd.to_datetime(df["startdate"], errors="coerce")
-    df["enddate"] = pd.to_datetime(df["enddate"], errors="coerce")
 
 
 def main():
