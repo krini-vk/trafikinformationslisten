@@ -6,25 +6,6 @@ import pandas as pd
 from dotenv import load_dotenv
 
 
-def get_last_log_date():
-    """
-    Get the last date from the log file.
-    Returns None if the log file does not exist or is empty.
-    """
-    try:
-        with open("log.txt", "r") as log_file:
-            lines = log_file.readlines()
-            if lines:
-                last_line = lines[-1].strip()
-                return datetime.datetime.fromisoformat(
-                    last_line.split("---")[0].strip()
-                ).date()
-            else:
-                return None
-    except FileNotFoundError:
-        return None
-
-
 def update_log(message):
     """
     Update the log file with a message.
@@ -97,8 +78,6 @@ def format_data(df: pd.DataFrame):
 
 
 def main():
-    last_log_date = get_last_log_date()
-
     # get the data from the API
     data = get_data()
     df = pd.DataFrame(data)
@@ -107,13 +86,7 @@ def main():
     # read the template and render the data
     doc_template = DocxTemplate("trafik_info_template.docx")
 
-    if last_log_date is not None:
-        roadwork = df[df["startdate"] > str(last_log_date)].to_dict(orient="records")
-
-    else:
-        roadwork = df.to_dict(orient="records")
-
-    roadwork.sort(key=lambda x: x["startdate"])
+    roadwork = df.sort_values("startdate").to_dict(orient="records")
 
     contents = {
         "roadwork": roadwork,
