@@ -145,7 +145,7 @@ if __name__ == "__main__":
 
         # Run the main function
         main()
-        update_log("Script executed successfully.")
+        update_log(f"Script executed successfully. Output saved to: {output_path}")
     except Exception as e:
         update_log(f"Error: {str(e)}")
         raise e
