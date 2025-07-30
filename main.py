@@ -112,7 +112,10 @@ if __name__ == "__main__":
         today_date_text = today_date.strftime("%d-%m-%Y")
         week_number = today_date.isocalendar()[1]
 
-        output_folder = os.getenv("OUTPUT_FOLDER")  # Get from .env
+        output_folder_base = os.getenv("OUTPUT_FOLDER")  # Get from .env
+        output_folder = os.path.join(output_folder_base, str(today_date.year))
+        os.makedirs(output_folder, exist_ok=True)
+
         filename = (
             f"trafikinformationslisten - uge {week_number} {today_date.year}.docx"
         )
