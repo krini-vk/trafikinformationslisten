@@ -138,14 +138,10 @@ if __name__ == "__main__":
         filename = (
             f"trafikinformationslisten - uge {week_number} {today_date.year}.docx"
         )
-        # output_path = os.path.join(output_folder, filename)
+        output_path = os.path.join(output_folder, filename)
 
         log_filename = "log.txt"
-        # log_paths = [os.path.join(output_folder, log_filename), log_filename]
-
-        # TESTING PATHS
-        log_paths = [log_filename]  # only for testing purposes
-        output_path = filename  # only for testing purposes
+        log_paths = [os.path.join(output_folder, log_filename), log_filename]
 
         # Run the main function
         main()
