@@ -41,7 +41,7 @@ def get_data():
         "outSR": "25832",
         "f": "geojson",
         "outFields": "*",
-        "where": "traficstatus = 'Trafikudmeldt' and dagetilstart < 100",
+        "where": "traficstatus = 'Trafikudmeldt' and dagetilstart <= 12",
         "orderByFields": "startdate",
     }
 
@@ -56,11 +56,14 @@ def get_data():
 def format_data(df: pd.DataFrame):
     # create new columns for road info and user direction
     df["road_info"] = df["oov2roaduserdescription"].apply(
-        lambda x: x.split("\n")[0].strip() if isinstance(x, str) else None
+        lambda x: x.split("\n")[0].strip() if isinstance(x, str) and "\n" in x else None
     )
-    df["user_direction"] = df["oov2roaduserdescription"].apply(
+    df["reroute"] = df["oov2roaduserdescription"].apply(
         lambda x: " ".join(x.split("\n")[1:]).strip() if isinstance(x, str) else None
     )
+
+    # remove the first instance of "Omkørsel via: " from reroute
+    df["reroute"] = df["reroute"].str.replace("Omkørsel via: ", "", n=1).str.strip()
 
     # rename column dataframe columns to match the template
     df.rename(
@@ -105,22 +108,18 @@ def main():
     doc_template = DocxTemplate("trafik_info_template.docx")
 
     if last_log_date is not None:
-        new_roadwork = df[df["startdate"] > str(last_log_date)].to_dict(
-            orient="records"
-        )
-        old_roadwork = df[df["startdate"] <= str(last_log_date)].to_dict(
-            orient="records"
-        )
+        roadwork = df[df["startdate"] > str(last_log_date)].to_dict(orient="records")
+
     else:
-        new_roadwork = df.to_dict(orient="records")
-        old_roadwork = []
+        roadwork = df.to_dict(orient="records")
+
+    roadwork.sort(key=lambda x: x["startdate"])
 
     contents = {
-        "new_roadwork": new_roadwork,
-        "old_roadwork": old_roadwork,
-        "today_date": today_date,
+        "roadwork": roadwork,
+        "today_date": today_date_text,
         "current_year": today_date.year,
-        "week_number": today_date.isocalendar()[1],
+        "week_number": week_number,
     }
     doc_template.render(contents)
     doc_template.save(output_path)
@@ -132,13 +131,21 @@ if __name__ == "__main__":
         load_dotenv()  # Load environment variables from .env
 
         today_date = datetime.datetime.today().date()
+        today_date_text = today_date.strftime("%d-%m-%Y")
+        week_number = today_date.isocalendar()[1]
 
         output_folder = os.getenv("OUTPUT_FOLDER")  # Get from .env
-        filename = f"trafik informations listen {today_date}.docx"
-        output_path = os.path.join(output_folder, filename)
+        filename = (
+            f"trafikinformationslisten - uge {week_number} {today_date.year}.docx"
+        )
+        # output_path = os.path.join(output_folder, filename)
 
         log_filename = "log.txt"
-        log_paths = [os.path.join(output_folder, log_filename), log_filename]
+        # log_paths = [os.path.join(output_folder, log_filename), log_filename]
+
+        # TESTING PATHS
+        log_paths = [log_filename]  # only for testing purposes
+        output_path = filename  # only for testing purposes
 
         # Run the main function
         main()
