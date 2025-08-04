@@ -62,12 +62,16 @@ def format_data(df: pd.DataFrame):
 
     # convert date columns to datetime
     datetime_format = "%d-%m-%Y"
-    df["startdate"] = pd.to_datetime(df["startdate"], errors="coerce").dt.strftime(
-        datetime_format
-    )
-    df["enddate"] = pd.to_datetime(df["enddate"], errors="coerce").dt.strftime(
-        datetime_format
-    )
+    # Convert to datetime but do NOT immediately convert back to string
+    df["startdate"] = pd.to_datetime(df["startdate"], errors="coerce")
+    df["enddate"] = pd.to_datetime(df["enddate"], errors="coerce")
+
+    # Now sorting will work as expected, because columns are datetime objects
+    df.sort_values(by=["startdate", "starttime"], inplace=True)
+
+    # If you need to display them as strings later:
+    df["startdate"] = df["startdate"].dt.strftime(datetime_format)
+    df["enddate"] = df["enddate"].dt.strftime(datetime_format)
 
     # add starttime and endtime to period, if startdate and enddate are the same
     df["duration"] = df.apply(
