@@ -95,7 +95,7 @@ def main():
     # read the template and render the data
     doc_template = DocxTemplate("trafik_info_template.docx")
 
-    roadwork = df.sort_values("startdate").to_dict(orient="records")
+    roadwork = df.to_dict(orient="records")
 
     contents = {
         "roadwork": roadwork,
