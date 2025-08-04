@@ -116,9 +116,7 @@ if __name__ == "__main__":
         output_folder = os.path.join(output_folder_base, str(today_date.year))
         os.makedirs(output_folder, exist_ok=True)
 
-        filename = (
-            f"trafikinformationslisten - uge {week_number} {today_date.year}.docx"
-        )
+        filename = f"TRAFIK-INFO - UGE {week_number + 1} {today_date.year}.docx"
         output_path = os.path.join(output_folder, filename)
 
         log_filename = "log.txt"
