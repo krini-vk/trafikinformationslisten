@@ -67,7 +67,7 @@ def format_data(df: pd.DataFrame):
     df["enddate"] = pd.to_datetime(df["enddate"], errors="coerce")
 
     # Now sorting will work as expected, because columns are datetime objects
-    df.sort_values(by=["startdate", "starttime"], inplace=True)
+    df.sort_values(by=["startdate", "starttime"], inplace=True, ascending=False)
 
     # If you need to display them as strings later:
     df["startdate"] = df["startdate"].dt.strftime(datetime_format)
