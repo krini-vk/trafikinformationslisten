@@ -101,7 +101,7 @@ def main():
         "roadwork": roadwork,
         "today_date": today_date_text,
         "current_year": today_date.year,
-        "week_number": week_number,
+        "week_number": next_week_number,
     }
     doc_template.render(contents)
     doc_template.save(output_path)
@@ -114,13 +114,13 @@ if __name__ == "__main__":
 
         today_date = datetime.datetime.today().date()
         today_date_text = today_date.strftime("%d-%m-%Y")
-        week_number = today_date.isocalendar()[1]
+        next_week_number = today_date.isocalendar()[1] + 1
 
         output_folder_base = os.getenv("OUTPUT_FOLDER")  # Get from .env
         output_folder = os.path.join(output_folder_base, str(today_date.year))
         os.makedirs(output_folder, exist_ok=True)
 
-        filename = f"TRAFIK-INFO - UGE {week_number + 1} {today_date.year}.docx"
+        filename = f"TRAFIK-INFO - UGE {next_week_number} {today_date.year}.docx"
         output_path = os.path.join(output_folder, filename)
 
         log_filename = "log.txt"
